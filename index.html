@@ -13,18 +13,19 @@ body {
   overflow: hidden;
 }
 
-/* animated particles */
+/* animated background */
 canvas {
   position: absolute;
   top: 0;
   left: 0;
 }
 
+/* LOWERED POSITION */
 .center {
   position: relative;
   z-index: 2;
   text-align: center;
-  top: 50%;
+  top: 60%; /* 👈 moved down */
   transform: translateY(-50%);
 }
 
@@ -48,10 +49,11 @@ h1 {
 }
 
 .search {
-  padding: 10px;
-  width: 250px;
+  padding: 12px;
+  width: 260px;
   border-radius: 8px;
   border: none;
+  outline: none;
 }
 
 .btn {
@@ -64,14 +66,8 @@ h1 {
   cursor: pointer;
 }
 
-.page {
-  display: none;
-}
-
-iframe {
-  width: 100vw;
-  height: 100vh;
-  border: none;
+.btn:hover {
+  background: rgba(255,255,255,0.15);
 }
 </style>
 </head>
@@ -80,27 +76,23 @@ iframe {
 
 <canvas id="bg"></canvas>
 
-<!-- MAIN PAGE -->
-<div id="home" class="center">
+<div class="center">
   <div class="box">
     <h1>
       Thiago Jeux
       <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="20">
     </h1>
 
-    <input class="search" id="search" placeholder="Search or enter URL">
+    <input 
+      class="search" 
+      id="search" 
+      placeholder="Search or enter URL"
+    >
 
     <br>
 
-    <button class="btn" onclick="goGame()">Games</button>
+    <button class="btn">Games</button>
   </div>
-</div>
-
-<!-- GAME PAGE -->
-<div id="gamePage" class="page">
-  <img src="https://tse4.mm.bing.net/th/id/OIP.x2QH3XaNtGXsYqJFnc8eIgHaHa?r=0&w=640&h=640&rs=1&pid=ImgDetMain&o=7&rm=3" width="60" style="position:absolute;top:10px;left:10px;">
-  
-  <iframe src="https://jbluebird.github.io/Among-Us-Online/game/amongus.html"></iframe>
 </div>
 
 <script>
@@ -115,12 +107,6 @@ document.getElementById("search").addEventListener("keydown", function(e) {
     }
   }
 });
-
-// SWITCH PAGE
-function goGame() {
-  document.getElementById("home").style.display = "none";
-  document.getElementById("gamePage").style.display = "block";
-}
 
 // ANIMATED BACKGROUND
 const canvas = document.getElementById("bg");
