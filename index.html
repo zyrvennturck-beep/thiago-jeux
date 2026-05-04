@@ -10,50 +10,50 @@ body {
   margin: 0;
   font-family: Arial;
   background: linear-gradient(135deg, #0a2a43, #1e5f9a);
-  color: white;
   overflow: hidden;
+  color: white;
 }
 
-/* animated background */
+/* background */
 canvas {
   position: absolute;
   top: 0;
   left: 0;
 }
 
-/* CENTER BOX (LOWERED) */
+/* ✅ FIXED POSITIONING */
 .center {
-  position: relative;
-  z-index: 2;
+  position: absolute;
+  left: 50%;
+  top: 65%; /* 👈 LOWER THIS to move whole box down */
+  transform: translate(-50%, -50%);
   text-align: center;
-  top: 75%; /* lowered for iPad */
-  transform: translateY(-50%);
+  z-index: 2;
 }
 
-/* BOX */
+/* box */
 .box {
   border: 2px solid white;
   padding: 30px;
   border-radius: 12px;
   display: inline-block;
   animation: float 3s ease-in-out infinite;
-  max-width: 90vw;
 }
 
 @keyframes float {
   50% { transform: translateY(-10px); }
 }
 
-/* TITLE */
+/* title */
 h1 {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  font-size: 28px;
+  margin: 0 0 15px 0;
 }
 
-/* SEARCH BAR */
+/* input */
 .search {
   padding: 12px;
   width: 260px;
@@ -64,7 +64,7 @@ h1 {
   font-size: 16px;
 }
 
-/* BUTTON */
+/* button */
 .btn {
   margin-top: 15px;
   padding: 10px 20px;
@@ -73,7 +73,6 @@ h1 {
   color: white;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
 }
 
 .btn:hover {
@@ -93,11 +92,7 @@ h1 {
       <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="22">
     </h1>
 
-    <input 
-      class="search" 
-      id="search" 
-      placeholder="Search or enter URL"
-    >
+    <input class="search" id="search" placeholder="Search or enter URL">
 
     <br>
 
@@ -106,7 +101,7 @@ h1 {
 </div>
 
 <script>
-// SEARCH BAR
+// search
 document.getElementById("search").addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
     let q = this.value;
@@ -118,7 +113,7 @@ document.getElementById("search").addEventListener("keydown", function(e) {
   }
 });
 
-// RESPONSIVE CANVAS
+// canvas
 const canvas = document.getElementById("bg");
 const ctx = canvas.getContext("2d");
 
@@ -129,7 +124,7 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-// PARTICLES
+// particles
 let particles = [];
 
 for (let i = 0; i < 100; i++) {
