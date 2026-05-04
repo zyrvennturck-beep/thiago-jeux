@@ -14,24 +14,26 @@ body {
   color: white;
 }
 
-/* background */
+/* CANVAS FIX (IMPORTANT) */
 canvas {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
-/* ✅ FIXED POSITIONING */
+/* CENTER BOX */
 .center {
   position: absolute;
   left: 50%;
-  top: 65%; /* 👈 LOWER THIS to move whole box down */
+  top: 65%;
   transform: translate(-50%, -50%);
   text-align: center;
   z-index: 2;
 }
 
-/* box */
 .box {
   border: 2px solid white;
   padding: 30px;
@@ -44,7 +46,6 @@ canvas {
   50% { transform: translateY(-10px); }
 }
 
-/* title */
 h1 {
   display: flex;
   align-items: center;
@@ -53,7 +54,6 @@ h1 {
   margin: 0 0 15px 0;
 }
 
-/* input */
 .search {
   padding: 12px;
   width: 260px;
@@ -64,7 +64,6 @@ h1 {
   font-size: 16px;
 }
 
-/* button */
 .btn {
   margin-top: 15px;
   padding: 10px 20px;
@@ -93,30 +92,18 @@ h1 {
     </h1>
 
     <input class="search" id="search" placeholder="Search or enter URL">
-
     <br>
-
     <button class="btn">Games</button>
   </div>
 </div>
 
 <script>
-// search
-document.getElementById("search").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") {
-    let q = this.value;
-    if (q.startsWith("http")) {
-      location.href = q;
-    } else {
-      location.href = "https://www.google.com/search?q=" + encodeURIComponent(q);
-    }
-  }
-});
-
-// canvas
 const canvas = document.getElementById("bg");
 const ctx = canvas.getContext("2d");
 
+let particles = [];
+
+/* FIX: proper resize */
 function resize() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -124,10 +111,8 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-// particles
-let particles = [];
-
-for (let i = 0; i < 100; i++) {
+/* particles */
+for (let i = 0; i < 120; i++) {
   particles.push({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
@@ -139,7 +124,7 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   particles.forEach(p => {
-    p.y += 0.3;
+    p.y += 0.4;
     if (p.y > canvas.height) p.y = 0;
 
     ctx.beginPath();
@@ -152,6 +137,18 @@ function draw() {
 }
 
 draw();
+
+/* search */
+document.getElementById("search").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    let q = this.value;
+    if (q.startsWith("http")) {
+      location.href = q;
+    } else {
+      location.href = "https://www.google.com/search?q=" + encodeURIComponent(q);
+    }
+  }
+});
 </script>
 
 </body>
