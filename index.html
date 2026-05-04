@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thiago Jeux</title>
 
 <style>
@@ -20,42 +21,50 @@ canvas {
   left: 0;
 }
 
-/* LOWERED POSITION */
+/* CENTER BOX (LOWERED) */
 .center {
   position: relative;
   z-index: 2;
   text-align: center;
-  top: 60%; /* 👈 moved down */
+  top: 75%; /* lowered for iPad */
   transform: translateY(-50%);
 }
 
+/* BOX */
 .box {
   border: 2px solid white;
   padding: 30px;
   border-radius: 12px;
   display: inline-block;
   animation: float 3s ease-in-out infinite;
+  max-width: 90vw;
 }
 
 @keyframes float {
   50% { transform: translateY(-10px); }
 }
 
+/* TITLE */
 h1 {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+  font-size: 28px;
 }
 
+/* SEARCH BAR */
 .search {
   padding: 12px;
   width: 260px;
+  max-width: 70vw;
   border-radius: 8px;
   border: none;
   outline: none;
+  font-size: 16px;
 }
 
+/* BUTTON */
 .btn {
   margin-top: 15px;
   padding: 10px 20px;
@@ -64,6 +73,7 @@ h1 {
   color: white;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
 }
 
 .btn:hover {
@@ -80,7 +90,7 @@ h1 {
   <div class="box">
     <h1>
       Thiago Jeux
-      <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="20">
+      <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="22">
     </h1>
 
     <input 
@@ -96,7 +106,7 @@ h1 {
 </div>
 
 <script>
-// SEARCH
+// SEARCH BAR
 document.getElementById("search").addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
     let q = this.value;
@@ -108,19 +118,24 @@ document.getElementById("search").addEventListener("keydown", function(e) {
   }
 });
 
-// ANIMATED BACKGROUND
+// RESPONSIVE CANVAS
 const canvas = document.getElementById("bg");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
 
+// PARTICLES
 let particles = [];
 
 for (let i = 0; i < 100; i++) {
   particles.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
     r: Math.random() * 2
   });
 }
