@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thiago Jeux</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0a2a43, #1e5f9a);
+      font-family: Arial, sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+
+    /* floating animation */
+    .box {
+      border: 2px solid white;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      width: 400px;
+      backdrop-filter: blur(10px);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    .search {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .games-btn {
+      padding: 10px 20px;
+      border: 2px solid white;
+      border-radius: 8px;
+      color: white;
+      background: transparent;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .games-btn:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    /* background stars */
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('https://www.transparenttextures.com/patterns/stardust.png');
+      opacity: 0.3;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="stars"></div>
+
+<div class="box">
+  <h1>Thiago Jeux</h1>
+
+  <input 
+    class="search" 
+    id="searchBox"
+    type="text" 
+    placeholder="Search or enter URL..."
+    onkeydown="handleSearch(event)"
+  >
+
+  <br>
+
+  <button class="games-btn">Games</button>
+</div>
+
+<script>
+function handleSearch(e) {
+  if (e.key === "Enter") {
+    let query = document.getElementById("searchBox").value;
+
+    if (query.startsWith("http")) {
+      window.location.href = query;
+    } else {
+      window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(query);
+    }
+  }
+}
+</script>
+
+</body>
+</html>
