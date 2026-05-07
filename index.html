@@ -1,155 +1,321 @@
+# DreamySoundKit — Vercel Website (Voicemod-Inspired)
+
+## Features
+
+* Modern dark neon UI inspired by Voicemod
+* Upload MP3 files directly in browser
+* Click sound name to instantly play audio
+* Audio automatically stops when finished
+* VR soundboard friendly
+* Responsive design
+* Ready for GitHub + Vercel deployment
+
+---
+
+# 1. Create `index.html`
+
+Save this as:
+
+```txt
+index.html
+```
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thiago Jeux</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DreamySoundKit</title>
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: linear-gradient(135deg, #0a2a43, #1e5f9a);
-  overflow: hidden;
-  color: white;
-}
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
 
-/* CANVAS FIX (IMPORTANT) */
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
+    body {
+      background: #0b0b13;
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: none;
+    }
 
-/* CENTER BOX */
-.center {
-  position: absolute;
-  left: 50%;
-  top: 65%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  z-index: 2;
-}
+    #vrCursor {
+      position: fixed;
+      width: 42px;
+      height: 42px;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.04s linear;
+    }
 
-.box {
-  border: 2px solid white;
-  padding: 30px;
-  border-radius: 12px;
-  display: inline-block;
-  animation: float 3s ease-in-out infinite;
-}
+    #vrCursor img {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 12px cyan);
+    }
 
-@keyframes float {
-  50% { transform: translateY(-10px); }
-}
+    .bg {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(139,92,246,0.3), transparent 40%);
+      z-index: 0;
+    }
 
-h1 {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 0 0 15px 0;
-}
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: auto;
+      padding: 40px 20px;
+    }
 
-.search {
-  padding: 12px;
-  width: 260px;
-  max-width: 70vw;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-  font-size: 16px;
-}
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
 
-.btn {
-  margin-top: 15px;
-  padding: 10px 20px;
-  border: 2px solid white;
-  background: transparent;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-}
+    h1 {
+      font-size: 52px;
+      font-weight: 900;
+      background: linear-gradient(to right, #22d3ee, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-.btn:hover {
-  background: rgba(255,255,255,0.15);
-}
-</style>
+    .subtitle {
+      color: #aaa;
+      margin-top: 10px;
+      font-size: 18px;
+    }
+
+    .upload-btn {
+      background: linear-gradient(to right, #06b6d4, #9333ea);
+      padding: 14px 24px;
+      border-radius: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      border: none;
+      color: white;
+      font-size: 16px;
+    }
+
+    .upload-btn:hover {
+      transform: scale(1.05);
+    }
+
+    #soundGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .sound-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 20px;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .sound-card:hover {
+      border-color: #22d3ee;
+      background: rgba(34,211,238,0.1);
+      transform: translateY(-4px);
+    }
+
+    .icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      background: linear-gradient(to bottom right, #22d3ee, #9333ea);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 16px;
+    }
+
+    .sound-name {
+      font-size: 18px;
+      font-weight: bold;
+      word-break: break-word;
+    }
+
+    .click-text {
+      margin-top: 8px;
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .empty {
+      margin-top: 100px;
+      text-align: center;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 30px;
+      padding: 70px 30px;
+    }
+
+    .empty h2 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .empty p {
+      color: #aaa;
+      font-size: 18px;
+    }
+  </style>
 </head>
-
 <body>
 
-<canvas id="bg"></canvas>
+<div id="vrCursor">
+  <img src="https://cdn-icons-png.flaticon.com/512/545/545705.png" alt="VR Cursor">
+</div>
 
-<div class="center">
-  <div class="box">
-    <h1>
-      Thiago Jeux
-      <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="22">
-    </h1>
+<div class="bg"></div>
 
-    <input class="search" id="search" placeholder="Search or enter URL">
-    <br>
-    <button class="btn">Games</button>
+<div class="container">
+  <div class="topbar">
+    <div>
+      <h1>DreamySoundKit</h1>
+      <div class="subtitle">VR MP3 Soundboard</div>
+    </div>
+
+    <div>
+      <label class="upload-btn">
+        Upload MP3
+        <input type="file" id="upload" accept="audio/mp3,audio/mpeg" multiple hidden>
+      </label>
+    </div>
+  </div>
+
+  <div id="soundGrid"></div>
+
+  <div class="empty" id="emptyState">
+    <h2>Upload Your MP3 Sounds</h2>
+    <p>Create your own VR soundboard instantly.</p>
   </div>
 </div>
 
 <script>
-const canvas = document.getElementById("bg");
-const ctx = canvas.getContext("2d");
+  const vrCursor = document.getElementById('vrCursor')
 
-let particles = [];
+  document.addEventListener('mousemove', (e) => {
+    vrCursor.style.left = e.clientX + 'px'
+    vrCursor.style.top = e.clientY + 'px'
+  })
 
-/* FIX: proper resize */
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
+  const upload = document.getElementById('upload')
+  const soundGrid = document.getElementById('soundGrid')
+  const emptyState = document.getElementById('emptyState')
 
-/* particles */
-for (let i = 0; i < 120; i++) {
-  particles.push({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    r: Math.random() * 2
-  });
-}
+  let currentAudio = null
 
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  upload.addEventListener('change', (e) => {
+    const files = e.target.files
 
-  particles.forEach(p => {
-    p.y += 0.4;
-    if (p.y > canvas.height) p.y = 0;
+    for (let file of files) {
+      if (file.type === 'audio/mpeg') {
+        const url = URL.createObjectURL(file)
 
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = "white";
-    ctx.fill();
-  });
+        const card = document.createElement('div')
+        card.className = 'sound-card'
 
-  requestAnimationFrame(draw);
-}
+        card.innerHTML = `
+          <div class="icon">🎵</div>
+          <div class="sound-name">${file.name}</div>
+          <div class="click-text">Click to play</div>
+        `
 
-draw();
+        card.onclick = () => {
+          if (currentAudio) {
+            currentAudio.pause()
+            currentAudio.currentTime = 0
+          }
 
-/* search */
-document.getElementById("search").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") {
-    let q = this.value;
-    if (q.startsWith("http")) {
-      location.href = q;
-    } else {
-      location.href = "https://www.google.com/search?q=" + encodeURIComponent(q);
+          currentAudio = new Audio(url)
+          currentAudio.play()
+
+          currentAudio.onended = () => {
+            currentAudio.pause()
+            currentAudio.currentTime = 0
+          }
+        }
+
+        soundGrid.appendChild(card)
+      }
     }
-  }
-});
+
+    if (soundGrid.children.length > 0) {
+      emptyState.style.display = 'none'
+    }
+  })
 </script>
 
 </body>
 </html>
+```
+
+---
+
+# 2. Run Website
+
+Double click:
+
+```txt
+index.html
+```
+
+OR host it with VS Code Live Server.
+
+---
+
+# 3. Upload To GitHub
+
+```bash
+git init
+git add .
+git commit -m "DreamySoundKit"
+git branch -M main
+git remote add origin YOUR_GITHUB_REPO_URL
+git push -u origin main
+```
+
+---
+
+# 4. Deploy To Vercel
+
+1. Upload repository to GitHub
+2. Go to [https://vercel.com](https://vercel.com)
+3. Login with GitHub
+4. Import repository
+5. Click Deploy
+
+Vercel automatically detects static HTML websites.
+
+---
+
+# Recommended Files
+
+```txt
+/index.html
+```
+
+# Recommended Repo Name
+
+```txt
+dreamysoundkit
+```
