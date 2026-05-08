@@ -202,6 +202,17 @@ index.html
     </div>
   </div>
 
+  <div style="margin-bottom: 30px;">
+    <label style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:18px 22px;border-radius:22px;width:fit-content;cursor:pointer;">
+      <input type="checkbox" id="oculusMic" style="width:22px;height:22px;cursor:pointer;">
+      <span style="font-size:17px;font-weight:700;">Use Oculus Microphone Device</span>
+    </label>
+
+    <div id="micStatus" style="margin-top:12px;color:#aaa;font-size:14px;">
+      Oculus microphone disabled.
+    </div>
+  </div>
+
   <div id="soundGrid"></div>
 
   <div class="empty" id="emptyState">
@@ -219,6 +230,22 @@ index.html
   })
 
   const upload = document.getElementById('upload')
+  const oculusMic = document.getElementById('oculusMic')
+  const micStatus = document.getElementById('micStatus')
+
+  oculusMic.addEventListener('change', async () => {
+    if (oculusMic.checked) {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true })
+        micStatus.textContent = 'Oculus microphone enabled.'
+      } catch (err) {
+        micStatus.textContent = 'Microphone permission denied.'
+        oculusMic.checked = false
+      }
+    } else {
+      micStatus.textContent = 'Oculus microphone disabled.'
+    }
+  })
   const soundGrid = document.getElementById('soundGrid')
   const emptyState = document.getElementById('emptyState')
 
