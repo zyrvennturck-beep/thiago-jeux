@@ -24,271 +24,190 @@ index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DreamySoundKit</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DreamySoundKit Terminal</title>
 
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: Arial, sans-serif;
+      font-family: Consolas, monospace;
     }
 
     body {
-      background: #0b0b13;
-      color: white;
-      min-height: 100vh;
-      overflow-x: hidden;
+      background: black;
+      color: #00ff66;
+      overflow: hidden;
+      height: 100vh;
       cursor: none;
     }
 
-    #vrCursor {
+    #cursor {
       position: fixed;
-      width: 42px;
-      height: 42px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #00ff66;
+      box-shadow: 0 0 15px #00ff66;
       pointer-events: none;
-      z-index: 99999;
+      z-index: 9999;
       transform: translate(-50%, -50%);
-      transition: transform 0.04s linear;
     }
 
-    #vrCursor img {
+    .terminal {
       width: 100%;
-      height: 100%;
-      filter: drop-shadow(0 0 12px cyan);
+      height: 100vh;
+      padding: 25px;
+      overflow-y: auto;
+      background:
+        radial-gradient(circle at top, rgba(0,255,100,0.08), transparent 30%),
+        #020202;
     }
 
-    .bg {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at top, rgba(139,92,246,0.3), transparent 40%);
-      z-index: 0;
+    .title {
+      font-size: 32px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 15px #00ff66;
     }
 
-    .container {
-      position: relative;
-      z-index: 2;
-      max-width: 1200px;
-      margin: auto;
-      padding: 40px 20px;
+    .sub {
+      color: #00aa44;
+      margin-bottom: 30px;
     }
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-bottom: 40px;
-    }
-
-    h1 {
-      font-size: 52px;
-      font-weight: 900;
-      background: linear-gradient(to right, #22d3ee, #a855f7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .subtitle {
-      color: #aaa;
-      margin-top: 10px;
-      font-size: 18px;
-    }
-
-    .upload-btn {
-      background: linear-gradient(to right, #06b6d4, #9333ea);
-      padding: 14px 24px;
-      border-radius: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
-      border: none;
-      color: white;
-      font-size: 16px;
-    }
-
-    .upload-btn:hover {
-      transform: scale(1.05);
-    }
-
-    #soundGrid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
-
-    .sound-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 24px;
-      padding: 20px;
-      cursor: pointer;
-      transition: 0.25s;
-    }
-
-    .sound-card:hover {
-      border-color: #22d3ee;
-      background: rgba(34,211,238,0.1);
-      transform: translateY(-4px);
-    }
-
-    .icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 18px;
-      background: linear-gradient(to bottom right, #22d3ee, #9333ea);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      margin-bottom: 16px;
-    }
-
-    .sound-name {
-      font-size: 18px;
-      font-weight: bold;
+    .line {
+      margin-bottom: 8px;
+      white-space: pre-wrap;
       word-break: break-word;
     }
 
-    .click-text {
-      margin-top: 8px;
-      color: #aaa;
-      font-size: 14px;
+    .input-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .empty {
-      margin-top: 100px;
-      text-align: center;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 30px;
-      padding: 70px 30px;
+    .prompt {
+      color: #00ff66;
     }
 
-    .empty h2 {
-      font-size: 36px;
-      margin-bottom: 20px;
+    input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #00ff66;
+      width: 100%;
+      font-size: 16px;
     }
 
-    .empty p {
-      color: #aaa;
-      font-size: 18px;
+    .loading {
+      color: #00ff66;
+      text-shadow: 0 0 8px #00ff66;
     }
   </style>
 </head>
 <body>
 
-<div id="vrCursor">
-  <img src="https://cdn-icons-png.flaticon.com/512/545/545705.png" alt="VR Cursor">
-</div>
+<div id="cursor"></div>
 
-<div class="bg"></div>
+<div class="terminal" id="terminal">
+  <div class="title">DreamySoundKit Terminal</div>
+  <div class="sub">Experimental VR Remote Console</div>
 
-<div class="container">
-  <div class="topbar">
-    <div>
-      <h1>DreamySoundKit</h1>
-      <div class="subtitle">VR MP3 Soundboard</div>
-    </div>
+  <div class="line">Type commands below.</div>
+  <div class="line">Available commands:</div>
+  <div class="line">IP Connect [IP]</div>
+  <div class="line">SideRoot</div>
 
-    <div>
-      <label class="upload-btn">
-        Upload MP3
-        <input type="file" id="upload" accept="audio/mp3,audio/mpeg" multiple hidden>
-      </label>
-    </div>
-  </div>
+  <br>
 
-  <div style="margin-bottom: 30px;">
-    <label style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:18px 22px;border-radius:22px;width:fit-content;cursor:pointer;">
-      <input type="checkbox" id="oculusMic" style="width:22px;height:22px;cursor:pointer;">
-      <span style="font-size:17px;font-weight:700;">Use Oculus Microphone Device</span>
-    </label>
+  <div id="output"></div>
 
-    <div id="micStatus" style="margin-top:12px;color:#aaa;font-size:14px;">
-      Oculus microphone disabled.
-    </div>
-  </div>
-
-  <div id="soundGrid"></div>
-
-  <div class="empty" id="emptyState">
-    <h2>Upload Your MP3 Sounds</h2>
-    <p>Create your own VR soundboard instantly.</p>
+  <div class="input-line">
+    <span class="prompt">></span>
+    <input id="commandInput" autocomplete="off" autofocus>
   </div>
 </div>
 
 <script>
-  const vrCursor = document.getElementById('vrCursor')
+  const cursor = document.getElementById('cursor')
 
   document.addEventListener('mousemove', (e) => {
-    vrCursor.style.left = e.clientX + 'px'
-    vrCursor.style.top = e.clientY + 'px'
+    cursor.style.left = e.clientX + 'px'
+    cursor.style.top = e.clientY + 'px'
   })
 
-  const upload = document.getElementById('upload')
-  const oculusMic = document.getElementById('oculusMic')
-  const micStatus = document.getElementById('micStatus')
+  const input = document.getElementById('commandInput')
+  const output = document.getElementById('output')
+  const terminal = document.getElementById('terminal')
 
-  oculusMic.addEventListener('change', async () => {
-    if (oculusMic.checked) {
-      try {
-        await navigator.mediaDevices.getUserMedia({ audio: true })
-        micStatus.textContent = 'Oculus microphone enabled.'
-      } catch (err) {
-        micStatus.textContent = 'Microphone permission denied.'
-        oculusMic.checked = false
-      }
-    } else {
-      micStatus.textContent = 'Oculus microphone disabled.'
+  let connectedIP = null
+
+  function print(text, className = '') {
+    const div = document.createElement('div')
+    div.className = 'line ' + className
+    div.textContent = text
+    output.appendChild(div)
+
+    terminal.scrollTop = terminal.scrollHeight
+  }
+
+  input.addEventListener('keydown', async (e) => {
+    if (e.key !== 'Enter') return
+
+    const cmd = input.value.trim()
+
+    print('> ' + cmd)
+
+    input.value = ''
+
+    if (cmd.toLowerCase().startsWith('ip connect ')) {
+      const ip = cmd.substring(11)
+
+      connectedIP = ip
+
+      print('Attempting secure connection...')
+
+      setTimeout(() => {
+        print('Connected To IP: "' + ip + '"')
+      }, 700)
+
+      return
     }
-  })
-  const soundGrid = document.getElementById('soundGrid')
-  const emptyState = document.getElementById('emptyState')
 
-  let currentAudio = null
+    if (cmd.toLowerCase() === 'sideroot') {
+      if (!connectedIP) {
+        print('ERROR: No IP connected.')
+        return
+      }
 
-  upload.addEventListener('change', (e) => {
-    const files = e.target.files
+      print('Launching SideRoot Protocol...')
 
-    for (let file of files) {
-      if (file.type === 'audio/mpeg') {
-        const url = URL.createObjectURL(file)
+      let percent = 0
 
-        const card = document.createElement('div')
-        card.className = 'sound-card'
+      const loading = setInterval(() => {
+        percent += Math.floor(Math.random() * 12) + 3
 
-        card.innerHTML = `
-          <div class="icon">🎵</div>
-          <div class="sound-name">${file.name}</div>
-          <div class="click-text">Click to play</div>
-        `
+        if (percent > 100) percent = 100
 
-        card.onclick = () => {
-          if (currentAudio) {
-            currentAudio.pause()
-            currentAudio.currentTime = 0
-          }
+        print('SideRoot Loading... ' + percent + '%', 'loading')
 
-          currentAudio = new Audio(url)
-          currentAudio.play()
+        if (percent >= 100) {
+          clearInterval(loading)
 
-          currentAudio.onended = () => {
-            currentAudio.pause()
-            currentAudio.currentTime = 0
-          }
+          setTimeout(() => {
+            print('SideRoot Access Granted.')
+            print('Connected Node: ' + connectedIP)
+          }, 500)
         }
+      }, 250)
 
-        soundGrid.appendChild(card)
-      }
+      return
     }
 
-    if (soundGrid.children.length > 0) {
-      emptyState.style.display = 'none'
-    }
+    print('Unknown command.')
   })
 </script>
 
