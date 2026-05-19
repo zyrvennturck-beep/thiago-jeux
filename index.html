@@ -1,267 +1,133 @@
-# DreamySoundKit — Vercel Website (Voicemod-Inspired)
-
-## Features
-
-* Modern dark neon UI inspired by Voicemod
-* Upload MP3 files directly in browser
-* Click sound name to instantly play audio
-* Audio automatically stops when finished
-* VR soundboard friendly
-* Responsive design
-* Ready for GitHub + Vercel deployment
-
----
-
-# 1. Create `index.html`
-
-Save this as:
-
-```txt
-index.html
-```
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DreamySoundKit Terminal</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DreamyHoster</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Consolas, monospace;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #07070a;
+  color: white;
+  overflow-x: hidden;
+}
 
-    body {
-      background: black;
-      color: #00ff66;
-      overflow: hidden;
-      height: 100vh;
-      cursor: none;
-    }
+.glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  filter: blur(120px);
+  border-radius: 50%;
+  z-index: 0;
+}
 
-    #cursor {
-      position: fixed;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #00ff66;
-      box-shadow: 0 0 15px #00ff66;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-    }
+.purple { background: purple; top: -100px; left: -100px; opacity: 0.3; }
+.cyan { background: cyan; bottom: -100px; right: -100px; opacity: 0.2; }
 
-    .terminal {
-      width: 100%;
-      height: 100vh;
-      padding: 25px;
-      overflow-y: auto;
-      background:
-        radial-gradient(circle at top, rgba(0,255,100,0.08), transparent 30%),
-        #020202;
-    }
+nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  position: relative;
+  z-index: 1;
+}
 
-    .title {
-      font-size: 32px;
-      margin-bottom: 10px;
-      text-shadow: 0 0 15px #00ff66;
-    }
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  background: linear-gradient(to right, purple, cyan);
+  -webkit-background-clip: text;
+  color: transparent;
+}
 
-    .sub {
-      color: #00aa44;
-      margin-bottom: 30px;
-    }
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1000px;
+  margin: auto;
+  padding: 40px;
+}
 
-    .line {
-      margin-bottom: 8px;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
+.card {
+  background: rgba(255,255,255,0.05);
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+}
 
-    .input-line {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(0,0,0,0.4);
+  color: white;
+}
 
-    .prompt {
-      color: #00ff66;
-    }
+button {
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(to right, purple, cyan);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    input {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #00ff66;
-      width: 100%;
-      font-size: 16px;
-    }
+button:hover {
+  opacity: 0.8;
+}
+</style>
 
-    .loading {
-      color: #00ff66;
-      text-shadow: 0 0 8px #00ff66;
-    }
-  </style>
 </head>
+
 <body>
 
-<div id="cursor"></div>
+<div class="glow purple"></div>
+<div class="glow cyan"></div>
 
-<div class="terminal" id="terminal">
-  <div class="title">DreamySoundKit Terminal</div>
-  <div class="sub">Experimental VR Remote Console</div>
+<nav>
+  <div class="title">DreamyHoster</div>
+  <button>Login (UI only)</button>
+</nav>
 
-  <div class="line">Type commands below.</div>
-  <div class="line">Available commands:</div>
-  <div class="line">IP Connect [IP]</div>
-  <div class="line">SideRoot</div>
+<div class="container">
 
-  <br>
+  <h1>Create Minecraft Server</h1>
 
-  <div id="output"></div>
+  <div class="card">
 
-  <div class="input-line">
-    <span class="prompt">></span>
-    <input id="commandInput" autocomplete="off" autofocus>
+    <label>Server Name</label>
+    <input placeholder="My Awesome Server"/>
+
+    <label>Version</label>
+    <select>
+      <option>1.19</option>
+      <option>1.20</option>
+      <option>1.21.11</option>
+    </select>
+
+    <label>Software</label>
+    <select>
+      <option>Vanilla</option>
+      <option>Fabric</option>
+      <option>Forge</option>
+    </select>
+
+    <button onclick="alert('UI only — no backend yet')">
+      Create Server
+    </button>
+
   </div>
+
 </div>
-
-<script>
-  const cursor = document.getElementById('cursor')
-
-  document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px'
-    cursor.style.top = e.clientY + 'px'
-  })
-
-  const input = document.getElementById('commandInput')
-  const output = document.getElementById('output')
-  const terminal = document.getElementById('terminal')
-
-  let connectedIP = null
-
-  function print(text, className = '') {
-    const div = document.createElement('div')
-    div.className = 'line ' + className
-    div.textContent = text
-    output.appendChild(div)
-
-    terminal.scrollTop = terminal.scrollHeight
-  }
-
-  input.addEventListener('keydown', async (e) => {
-    if (e.key !== 'Enter') return
-
-    const cmd = input.value.trim()
-
-    print('> ' + cmd)
-
-    input.value = ''
-
-    if (cmd.toLowerCase().startsWith('ip connect ')) {
-      const ip = cmd.substring(11)
-
-      connectedIP = ip
-
-      print('Attempting secure connection...')
-
-      setTimeout(() => {
-        print('Connected To IP: "' + ip + '"')
-      }, 700)
-
-      return
-    }
-
-    if (cmd.toLowerCase() === 'sideroot') {
-      if (!connectedIP) {
-        print('ERROR: No IP connected.')
-        return
-      }
-
-      print('Launching SideRoot Protocol...')
-
-      let percent = 0
-
-      const loading = setInterval(() => {
-        percent += Math.floor(Math.random() * 12) + 3
-
-        if (percent > 100) percent = 100
-
-        print('SideRoot Loading... ' + percent + '%', 'loading')
-
-        if (percent >= 100) {
-          clearInterval(loading)
-
-          setTimeout(() => {
-            print('SideRoot Access Granted.')
-            print('Connected Node: ' + connectedIP)
-          }, 500)
-        }
-      }, 250)
-
-      return
-    }
-
-    print('Unknown command.')
-  })
-</script>
 
 </body>
 </html>
-```
-
----
-
-# 2. Run Website
-
-Double click:
-
-```txt
-index.html
-```
-
-OR host it with VS Code Live Server.
-
----
-
-# 3. Upload To GitHub
-
-```bash
-git init
-git add .
-git commit -m "DreamySoundKit"
-git branch -M main
-git remote add origin YOUR_GITHUB_REPO_URL
-git push -u origin main
-```
-
----
-
-# 4. Deploy To Vercel
-
-1. Upload repository to GitHub
-2. Go to [https://vercel.com](https://vercel.com)
-3. Login with GitHub
-4. Import repository
-5. Click Deploy
-
-Vercel automatically detects static HTML websites.
-
----
-
-# Recommended Files
-
-```txt
-/index.html
-```
-
-# Recommended Repo Name
-
-```txt
-dreamysoundkit
-```
